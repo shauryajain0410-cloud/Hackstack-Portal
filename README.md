@@ -35,59 +35,60 @@ A modern Learning Management System (LMS) built by the **Student Web Committee**
 
 ## 📁 Project Structure
 
-```
+```text
 Hackstack-Portal/
 ├── backend/
 │   ├── config/
 │   │   └── db.js                 # Database connection config
 │   ├── controllers/              # Business logic
 │   │   ├── authController.js
+│   │   ├── dashboardController.js
+│   │   ├── leaderboardController.js
 │   │   ├── moduleController.js
-│   │   ├── userController.js
+│   │   ├── notificationController.js
 │   │   ├── progressController.js
-│   │   └── quizController.js
+│   │   ├── quizController.js
+│   │   └── userController.js
 │   ├── middleware/               # Express middleware
-│   │   ├── authMiddleware.js     # JWT verification
-│   │   └── adminMiddleware.js    # Admin role check
 │   ├── models/                   # MongoDB schemas
-│   │   ├── User.js
-│   │   ├── Module.js
-│   │   ├── Quiz.js
-│   │   └── Progress.js
 │   ├── routes/                   # API endpoints
+│   │   ├── adminRoutes.js
 │   │   ├── authRoutes.js
+│   │   ├── dashboardRoutes.js
+│   │   ├── leaderboardRoutes.js
 │   │   ├── moduleRoutes.js
-│   │   ├── userRoutes.js
+│   │   ├── notificationRoutes.js
 │   │   ├── progressRoutes.js
 │   │   ├── quizRoutes.js
-│   │   └── adminRoutes.js
+│   │   ├── userRoutes.js
+│   │   └── whitelistRoutes.js
+│   ├── scripts/                  # Utility scripts
+│   ├── utils/                    # Helper functions
 │   ├── .env.example              # Environment template
+│   ├── docker-compose.yml        # Docker configuration
 │   ├── package.json
 │   └── server.js                 # Express server entry point
 │
 ├── frontend/
+│   ├── adminportal/              # Admin interface application
 │   ├── src/
 │   │   ├── assets/               # Images, icons, etc.
 │   │   ├── context/
-│   │   │   └── AuthContext.jsx   # Global auth state
-│   │   ├── pages/                # Page components
-│   │   │   ├── Login.jsx
-│   │   │   └── AuthCallback.jsx
+│   │   ├── pages/                
 │   │   ├── services/
-│   │   │   └── authService.js    # API client for auth
-│   │   ├── App.jsx               # Main app + routing
-│   │   ├── main.jsx              # React entry point
+│   │   ├── App.jsx               
+│   │   ├── main.jsx              
 │   │   └── index.css
 │   ├── public/                   # Static assets
 │   ├── .env.example              # Environment template
+│   ├── docker-compose.yml        # Docker configuration
 │   ├── vite.config.js
 │   ├── package.json
 │   └── index.html
 │
 ├── .gitignore
-├── README.md                     # This file
-└── CODE_REVIEW_REPORT.md         # Detailed code review
-```
+├── CONTRIBUTING.md               # Contribution guidelines
+└── README.md                     # This file
 
 ---
 
@@ -169,7 +170,7 @@ Frontend runs on `http://localhost:5173`
 ### Step 6: Test Authentication
 
 1. Navigate to `http://localhost:5173/login`
-2. Click "Continue with GitHub"
+2. Click "Continue with Google"
 3. You should be redirected to login and then to the dashboard
 4. ✅ If you see the dashboard, authentication is working!
 
@@ -185,8 +186,7 @@ cd backend
 # Start development server (with hot reload via nodemon)
 npm run dev
 
-# Run linting (if configured)
-npm run lint
+
 
 # Note: Test suite not yet implemented
 ```
@@ -212,13 +212,18 @@ npm run lint
 ### Key Environment Variables
 
 **Backend (.env):**
-```
+```env
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/hackstack
 JWT_SECRET=your_random_secret_here
 GOOGLE_CLIENT_ID=your_client_id
 GOOGLE_CLIENT_SECRET=your_client_secret
+OAUTH_CALLBACK_URL=http://localhost:5173/api/auth/google/callback
 FRONTEND_URL=http://localhost:5173
 PORT=5000
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=securepassword
+ALLOWED_ADMIN_GOOGLE_EMAILS=admin1@example.com,admin2@example.com
+ALLOWED_ADMIN_GOOGLE_IDS=1234567890,0987654321
 ```
 
 **Frontend (.env):**
@@ -229,6 +234,8 @@ VITE_API_URL=/api
 ---
 
 ## 📚 API Documentation
+
+> **Note:** The endpoint tables below show the paths used by the frontend. The Vite development server proxies these requests by catching the `/api` prefix and stripping it before sending the request to the backend. In the backend codebase, the routers are actually mounted at the root (`/auth`, `/modules`, `/quizzes`, etc.).
 
 ### Authentication Endpoints
 
@@ -383,14 +390,14 @@ npm run dev
 
 ## 🎯 Roadmap
 
-- [ ] Complete Dashboard component
-- [ ] Module detail pages with content rendering
-- [ ] Quiz taking interface
-- [ ] Progress tracking dashboard
-- [ ] Leaderboard implementation
-- [ ] Admin panel UI
-- [ ] User profile pages
-- [ ] Notification system
+- [x] Complete Dashboard component
+- [x] Module detail pages with content rendering
+- [x] Quiz taking interface
+- [x] Progress tracking dashboard
+- [x] Leaderboard implementation
+- [x] Admin panel UI
+- [x] User profile pages
+- [x] Notification system
 - [ ] Test suite (Jest + Supertest for backend, Vitest for frontend)
 - [ ] API documentation (Swagger/OpenAPI)
 - [ ] Production deployment guide
