@@ -50,7 +50,16 @@ Hackstack-Portal/
 │   │   ├── quizController.js
 │   │   └── userController.js
 │   ├── middleware/               # Express middleware
+│   │   ├── adminAuthMiddleware.js
+│   │   └── authMiddleware.js
 │   ├── models/                   # MongoDB schemas
+│   │   ├── AdminWhitelist.js
+│   │   ├── Leaderboard.js
+│   │   ├── Module.js
+│   │   ├── Notification.js
+│   │   ├── Progress.js
+│   │   ├── Quiz.js
+│   │   └── User.js
 │   ├── routes/                   # API endpoints
 │   │   ├── adminRoutes.js
 │   │   ├── authRoutes.js
@@ -65,22 +74,26 @@ Hackstack-Portal/
 │   ├── scripts/                  # Utility scripts
 │   ├── utils/                    # Helper functions
 │   ├── .env.example              # Environment template
+│   ├── Dockerfile
 │   ├── docker-compose.yml        # Docker configuration
 │   ├── package.json
 │   └── server.js                 # Express server entry point
 │
 ├── frontend/
-│   ├── adminportal/              # Admin interface application
+│   ├── adminportal/              # Admin portal pages and API helpers
 │   ├── src/
 │   │   ├── assets/               # Images, icons, etc.
+│   │   ├── components/           # Shared and UI components
 │   │   ├── context/
-│   │   ├── pages/                
-│   │   ├── services/
-│   │   ├── App.jsx               
-│   │   ├── main.jsx              
+│   │   ├── pages/                # Page components
+│   │   ├── services/             # API clients
+│   │   ├── utils/
+│   │   ├── App.jsx               # Main app + routing
+│   │   ├── main.jsx              # React entry point
 │   │   └── index.css
 │   ├── public/                   # Static assets
 │   ├── .env.example              # Environment template
+│   ├── Dockerfile
 │   ├── docker-compose.yml        # Docker configuration
 │   ├── vite.config.js
 │   ├── package.json
@@ -89,6 +102,7 @@ Hackstack-Portal/
 ├── .gitignore
 ├── CONTRIBUTING.md               # Contribution guidelines
 └── README.md                     # This file
+```
 
 ---
 
@@ -169,7 +183,7 @@ Frontend runs on `http://localhost:5173`
 
 ### Step 6: Test Authentication
 
-1. Navigate to `http://localhost:5173/login`
+1. Navigate to `http://localhost:5173/hackstack/login`
 2. Click "Continue with Google"
 3. You should be redirected to login and then to the dashboard
 4. ✅ If you see the dashboard, authentication is working!
@@ -183,10 +197,8 @@ Frontend runs on `http://localhost:5173`
 ```bash
 cd backend
 
-# Start development server (with hot reload via nodemon)
+# Start development server (no hot reload; restart after changes)
 npm run dev
-
-
 
 # Note: Test suite not yet implemented
 ```
@@ -217,11 +229,11 @@ MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/hackstack
 JWT_SECRET=your_random_secret_here
 GOOGLE_CLIENT_ID=your_client_id
 GOOGLE_CLIENT_SECRET=your_client_secret
-OAUTH_CALLBACK_URL=http://localhost:5173/api/auth/google/callback
+OAUTH_CALLBACK_URL=http://localhost:5173
 FRONTEND_URL=http://localhost:5173
 PORT=5000
 ADMIN_USERNAME=admin
-ADMIN_PASSWORD=securepassword
+ADMIN_PASSWORD=change_me
 ALLOWED_ADMIN_GOOGLE_EMAILS=admin1@example.com,admin2@example.com
 ALLOWED_ADMIN_GOOGLE_IDS=1234567890,0987654321
 ```
@@ -235,7 +247,7 @@ VITE_API_URL=/api
 
 ## 📚 API Documentation
 
-> **Note:** The endpoint tables below show the paths used by the frontend. The Vite development server proxies these requests by catching the `/api` prefix and stripping it before sending the request to the backend. In the backend codebase, the routers are actually mounted at the root (`/auth`, `/modules`, `/quizzes`, etc.).
+> **Note:** The endpoint tables below show paths as requested through the frontend dev server (`/api/...`). The Vite development server proxies these requests by catching the `/api` prefix and stripping it before sending the request to the backend. In the backend codebase, the routers are actually mounted at the root (`/auth`, `/modules`, `/quizzes`, etc.).
 
 ### Authentication Endpoints
 
@@ -308,11 +320,8 @@ All admin endpoints require `auth` + `admin` middleware:
 
 3. **Lint your code:**
    ```bash
-   # Frontend
+   # Frontend (the backend has no lint script yet)
    cd frontend && npm run lint
-   
-   # Backend (if linting is configured)
-   cd backend && npm run lint
    ```
 
 4. **Commit with clear messages:**
@@ -396,7 +405,7 @@ npm run dev
 - [x] Progress tracking dashboard
 - [x] Leaderboard implementation
 - [x] Admin panel UI
-- [x] User profile pages
+- [ ] User profile pages
 - [x] Notification system
 - [ ] Test suite (Jest + Supertest for backend, Vitest for frontend)
 - [ ] API documentation (Swagger/OpenAPI)
